@@ -15,8 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static # helps django to serve static files during development. for production, use ngix or any other web server.
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('filesharing/', include('filesharing.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # serve stafic files 
