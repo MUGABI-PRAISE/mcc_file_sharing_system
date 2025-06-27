@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
-from .models import Office
+from .models import Office, Document, DocumentRecipient
 
 ##########################################################################
 #   SERIALIZERS FOR USER MODEL. HANDLES AUTHENTICATION AND REGISTRATION
@@ -63,3 +63,44 @@ class OfficeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Office
         fields = ['id', 'name']
+
+
+#####################################################################
+# HANDLING FILE SUBMISSION SERIALIZER.
+#####################################################################
+# currently handles submission of one file
+class DocumentUploadSerializer(serializers.ModelSerializer):
+    offices = serializers.PrimaryKeyRelatedField(
+        queryset=Office.objects.all(),
+        many=True,
+        write_only=True  # We're only using it for input, not output
+    )
+
+    class Meta:
+        model = Document
+        fields = ['document_title', 'file', 'message', 'offices']
+
+    def create(self, validated_data):
+        offices = validated_data.pop('offices')  # List of office objects
+        user = self.context['request'].user
+
+        # Save the main document
+        document = Document.objects.create(sender=user, **validated_data)
+
+        # Create DocumentRecipient entries
+        for office in offices:
+            DocumentRecipient.objects.create(document=document, recipient_office=office)
+
+        return document
+
+
+##################################################################
+#    RECEIVED FILES. 
+##################################################################
+# create a serializer that includes document data through DocumentRecipient.
+class ReceivedDocumentSerializer(serializers.ModelSerializer):
+    document = DocumentUploadSerializer()
+
+    class Meta:
+        model = DocumentRecipient
+        fields = ['id', 'document', 'received_at', 'is_read']

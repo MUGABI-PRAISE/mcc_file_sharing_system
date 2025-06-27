@@ -22,6 +22,7 @@ from django.conf.urls.static import static # helps django to serve static files 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('filesharing/', include('filesharing.urls')),
+    path('api-auth/', include('rest_framework.urls')), # browsable api. should be in global urls.
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # serve stafic files 
