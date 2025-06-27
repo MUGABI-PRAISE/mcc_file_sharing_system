@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView # view for handling HTTP requests
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import login, logout
-from .serializers import UserSignupSerializer, UserLoginSerializer, UserSerializer, OfficeSerializer# our serializers
+from .serializers import UserSignupSerializer, UserLoginSerializer, UserSerializer, OfficeSerializer, DocumentUploadSerializer, ReceivedDocumentSerializer# our serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import permissions
-from rest_framework import generics
-from .models import Office
+from rest_framework import generics 
+from .models import Office, Document, DocumentRecipient
 
 
 # 1. User Signup View
@@ -59,10 +59,55 @@ class UserMeView(APIView):
         return Response(serializer.data)
     
 
-# handle offices
+# 4.  handle offices
 class OfficeListView(generics.ListAPIView):
     queryset = Office.objects.all()
     serializer_class = OfficeSerializer
     permission_classes = [permissions.AllowAny]
+
+
+# 5. send a file.
+class DocumentUploadView(generics.CreateAPIView):
+    '''class based views. their inheritence of the CreateAPIView makes them require less inputs 
+     to do great things.'''
+    queryset = Document.objects.all()
+    serializer_class = DocumentUploadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+# 6. sent files.
+class SentFilesView(generics.ListAPIView):
+    serializer_class = DocumentUploadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    #return documents in reverse order
+    def get_queryset(self):
+        return Document.objects.filter(sender=self.request.user, deleted_by_sender=False).order_by('-timestamp')
+
+
+# 7. received documents.
+class ReceivedFilesView(generics.ListAPIView):
+    serializer_class = ReceivedDocumentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_office = self.request.user.office
+        return DocumentRecipient.objects.filter(
+            recipient_office=user_office,
+            is_deleted=False
+        ).order_by('-received_at')
+
+
+#8. recent few(4) documents
+class RecentFilesView(generics.ListAPIView):
+    serializer_class = ReceivedDocumentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_office = self.request.user.office
+        return DocumentRecipient.objects.filter(
+            recipient_office=user_office,
+            is_deleted=False
+        ).order_by('-received_at')[:4] # return the latest four
 
 # Create your views here.

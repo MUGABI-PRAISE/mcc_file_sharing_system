@@ -1,0 +1,5 @@
+THIS IS THE FLOW YOU NEED TO NOTE WHEN USING REST FRAMEWOR.
+1. pip install it. pip install djangorestframework.
+2. add it in installed apps. ie 'rest_framework'
+3. add the urls in the global of your project.     path('api-auth/', include('rest_framework.urls')), # browsable api. should be in global urls.
+4. access the browsable api for easy testing of your api's.

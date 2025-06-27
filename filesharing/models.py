@@ -42,7 +42,7 @@ class Document(models.Model):
         on_delete=models.CASCADE,
         related_name='sent_documents'
     )
-    document_name = models.CharField(max_length=255, blank=True)
+    document_title = models.CharField(max_length=255, blank=True)
     message = models.TextField(blank=True)
     file = models.FileField(upload_to='documents/')  #required
     is_signed = models.BooleanField(default=False)
@@ -50,7 +50,7 @@ class Document(models.Model):
     deleted_by_sender = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.document_name or f"Document #{self.pk}"
+        return self.document_title or f"Document #{self.pk}"
 
     def clean(self):
         # File must always be present
@@ -58,8 +58,8 @@ class Document(models.Model):
             raise ValidationError("You must upload a file.")
 
         # If document_name is empty, auto-fill with file name
-        if not self.document_name:
-            self.document_name = os.path.basename(self.file.name)
+        # if not self.document_name:
+        #     self.document_name = os.path.basename(self.file.name)
 
     def save(self, *args, **kwargs):
         self.full_clean()  # Ensures validation logic runs

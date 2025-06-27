@@ -33,15 +33,14 @@ class OfficeAdmin(admin.ModelAdmin):
 # Document Admin
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ['document_name', 'sender', 'is_signed', 'timestamp', 'deleted_by_sender']
+    list_display = ['id', 'document_title', 'sender', 'get_recipients', 'is_signed', 'timestamp', 'deleted_by_sender']
     list_filter = ['is_signed', 'deleted_by_sender', 'timestamp', 'sender__office']
-    search_fields = ['document_name', 'message', 'sender__username', 'sender__first_name', 'sender__last_name']
+    search_fields = ['document_title', 'message', 'sender__username', 'sender__first_name', 'sender__last_name']
     readonly_fields = ['timestamp']
     date_hierarchy = 'timestamp'
-    
     fieldsets = (
         ('Document Info', {
-            'fields': ('document_name', 'message', 'file')
+            'fields': ('document_title', 'message', 'file')
         }),
         ('Status', {
             'fields': ('is_signed', 'deleted_by_sender')
@@ -52,15 +51,20 @@ class DocumentAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_recipients(self, obj):
+        recipients = obj.documentrecipient_set.all()
+        return ", ".join([r.recipient_office.name for r in recipients])
+    get_recipients.short_description = 'Sent To'
+
+
 # Document Recipient Admin
 @admin.register(DocumentRecipient)
 class DocumentRecipientAdmin(admin.ModelAdmin):
     list_display = ['document', 'recipient_office', 'received_at', 'is_read', 'is_deleted']
     list_filter = ['is_read', 'is_deleted', 'received_at', 'recipient_office']
-    search_fields = ['document__document_name', 'recipient_office__name']
+    search_fields = ['document__document_title', 'recipient_office__name']
     readonly_fields = ['received_at']
     date_hierarchy = 'received_at'
-    
     fieldsets = (
         ('Recipient Info', {
             'fields': ('document', 'recipient_office')

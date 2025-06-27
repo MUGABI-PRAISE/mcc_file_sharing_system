@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-f09q9zn17+7_thf_n7ziq78k1*m_l3)z-+!t@+0l^b9^8%93dp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.42.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'filesharing',
     'corsheaders', # allow other domains to login
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -146,6 +147,8 @@ AUTH_USER_MODEL = 'filesharing.User' # this helps for future use. not yet sure h
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication', # simple jwt responsible for handling authentication
+        'rest_framework.authentication.SessionAuthentication', # browsable api from the browser
+        'rest_framework.authentication.BasicAuthentication',  # simple authentication eg from the command prompt
     ),
 }
 
