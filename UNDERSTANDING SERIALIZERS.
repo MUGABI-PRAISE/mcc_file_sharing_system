@@ -1,0 +1,19 @@
+IMPORTANT THINGS YOU NEED TO NOTE ABOUT DJANGO REST FRAMEWORK.
+
+choices,, many = true. something to do with allowing you to view the relationships the current model has with other models.
+
+SERIALIZERS.
+Of course, the first thing to do is serializing. this includes transforming the object, say the model, into a formart suitable for transmission over a network, normally json, these days.
+
+using the serializer.
+it has two main methods.
+1. .is_valid(). this checks if the incoming requests are valid according to the expectations of the api, such as checking required fields, max length of fields, and others. if everything is okay, then it accepts the request and processes the request. otherwise, it returns errors to the calling object.
+
+2. .save() method. this does mainly two things. 
+	i) if the request doesnot have an instance of an object, it calls the internal create() method to create a new object. 
+	ii) if the request also provides the object instance and the data, .save() method calls the internal update method to update the instance in question.
+	
+VIEWS. 
+these power the end points that users see. now an api has several layers. we have the end points that the users see, but we have generators that power these endpoints. they are like an intermediary between these endpoints and the serializers. (coz they import them)
+
+1. API view
