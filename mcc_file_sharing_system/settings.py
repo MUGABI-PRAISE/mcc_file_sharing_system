@@ -109,11 +109,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Kampala' # capture our own time
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True #enables time zone support
 
 
 # Static files (CSS, JavaScript, Images)
@@ -148,7 +148,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication', # simple jwt responsible for handling authentication
         'rest_framework.authentication.SessionAuthentication', # browsable api from the browser
-        'rest_framework.authentication.BasicAuthentication',  # simple authentication eg from the command prompt
+        # 'rest_framework.authentication.BasicAuthentication',  # simple authentication eg from the command prompt
     ),
 }
 
