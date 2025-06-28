@@ -2,7 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from .models import Office, Document, DocumentRecipient
-
+from django.utils.timesince import timesince
+from django.utils.timezone import now
 ##########################################################################
 #   SERIALIZERS FOR USER MODEL. HANDLES AUTHENTICATION AND REGISTRATION
 ##########################################################################
@@ -73,21 +74,49 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
     offices = serializers.PrimaryKeyRelatedField(
         queryset=Office.objects.all(),
         many=True,
-        write_only=True  # We're only using it for input, not output
+        write_only=True
     )
+    file_size = serializers.SerializerMethodField(read_only=True)
+    sent_at = serializers.SerializerMethodField(read_only=True)
+    file_type = serializers.CharField(read_only=True)  # Include normalized file type in response
 
     class Meta:
         model = Document
-        fields = ['document_title', 'file', 'message', 'offices']
+        fields = [
+            'document_title',
+            'file',
+            'message',
+            'offices',
+            'file_size',
+            'sent_at',
+            'file_type'  # <- added field
+        ]
 
+    # Get the file size in bytes
+    def get_file_size(self, obj):
+        size = obj.file_size
+        if size is None:
+            return None
+        elif size < 1024:
+            return f"{size} B"
+        elif size < 1024 ** 2:
+            return f"{size / 1024:.1f} KB"
+        else:
+            return f"{size / (1024 ** 2):.1f} MB"
+
+    # time since sent
+    def get_sent_at(self, obj):
+        delta = timesince(obj.timestamp, now())
+        return f"{delta.split(',')[0]} ago"
+
+    # Create a new document and associated recipients
     def create(self, validated_data):
-        offices = validated_data.pop('offices')  # List of office objects
+        offices = validated_data.pop('offices')
         user = self.context['request'].user
 
-        # Save the main document
         document = Document.objects.create(sender=user, **validated_data)
 
-        # Create DocumentRecipient entries
+        # Create recipients for each office
         for office in offices:
             DocumentRecipient.objects.create(document=document, recipient_office=office)
 

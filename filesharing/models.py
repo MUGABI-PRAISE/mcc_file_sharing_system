@@ -36,6 +36,10 @@ class Office(models.Model):
     
     
 # DOCUMENT MODEL
+from django.db import models
+from django.conf import settings
+from django.core.exceptions import ValidationError
+
 class Document(models.Model):
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -44,7 +48,9 @@ class Document(models.Model):
     )
     document_title = models.CharField(max_length=255, blank=True)
     message = models.TextField(blank=True)
-    file = models.FileField(upload_to='documents/')  #required
+    file = models.FileField(upload_to='documents/')
+    file_type = models.CharField(max_length=10, blank=True)  # e.g., 'doc', 'ppt', 'xls', 'pdf'
+    file_size = models.PositiveIntegerField(null=True, blank=True)  # file size in bytes
     is_signed = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     deleted_by_sender = models.BooleanField(default=False)
@@ -53,16 +59,29 @@ class Document(models.Model):
         return self.document_title or f"Document #{self.pk}"
 
     def clean(self):
-        # File must always be present
         if not self.file:
             raise ValidationError("You must upload a file.")
 
-        # If document_name is empty, auto-fill with file name
-        # if not self.document_name:
-        #     self.document_name = os.path.basename(self.file.name)
-
     def save(self, *args, **kwargs):
-        self.full_clean()  # Ensures validation logic runs
+        self.full_clean()
+
+        if self.file:
+            name = self.file.name
+            ext = os.path.splitext(name)[1].lower().lstrip('.')  # get extension without dot
+
+            # Normalize extension groups
+            if ext in ['doc', 'docx']:
+                self.file_type = 'doc'
+            elif ext in ['ppt', 'pptx']:
+                self.file_type = 'ppt'
+            elif ext in ['xls', 'xlsx']:
+                self.file_type = 'xls'
+            else:
+                self.file_type = ext  # keep original for pdf, zip, etc.
+
+            # Get file size
+            self.file_size = self.file.size
+
         super().save(*args, **kwargs)
 
 
