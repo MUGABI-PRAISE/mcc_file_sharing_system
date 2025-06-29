@@ -4,12 +4,25 @@ from django.contrib.auth import authenticate
 from .models import Office, Document, DocumentRecipient
 from django.utils.timesince import timesince
 from django.utils.timezone import now
+
+#get the user model
+User = get_user_model()
+
+#################################################################
+#       SERIALIZER FOR OFFICE MODEL
+#################################################################
+class OfficeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Office
+        fields = ['id', 'name']
+
+
 ##########################################################################
 #   SERIALIZERS FOR USER MODEL. HANDLES AUTHENTICATION AND REGISTRATION
 ##########################################################################
-User = get_user_model() # substitute for importing the user model
-# general pourpose.
 class UserSerializer(serializers.ModelSerializer):
+    office = OfficeSerializer(read_only=True) # will be used to track the office name
+
     class Meta:
         model = User
         fields = [
@@ -57,6 +70,7 @@ class UserLoginSerializer(serializers.Serializer):
         return data
 
 
+
 #################################################################
 #       SERIALIZER FOR OFFICE MODEL
 #################################################################
@@ -64,7 +78,7 @@ class OfficeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Office
         fields = ['id', 'name']
-
+        
 
 #####################################################################
 # HANDLING FILE SUBMISSION SERIALIZER.
@@ -79,6 +93,7 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
     file_size = serializers.SerializerMethodField(read_only=True)
     sent_at = serializers.SerializerMethodField(read_only=True)
     file_type = serializers.CharField(read_only=True)  # Include normalized file type in response
+    sender = UserSerializer(read_only=True) 
 
     class Meta:
         model = Document
@@ -89,7 +104,8 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
             'offices',
             'file_size',
             'sent_at',
-            'file_type'  # <- added field
+            'file_type'  ,
+            'sender' 
         ]
 
     # Get the file size in bytes

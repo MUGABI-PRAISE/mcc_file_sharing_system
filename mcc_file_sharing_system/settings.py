@@ -152,3 +152,4 @@ REST_FRAMEWORK = {
     ),
 }
 
+X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost:3000'
