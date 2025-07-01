@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -150,6 +153,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication', # browsable api from the browser
         # 'rest_framework.authentication.BasicAuthentication',  # simple authentication eg from the command prompt
     ),
+}
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
 }
 
 X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost:3000'
