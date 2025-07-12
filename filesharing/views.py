@@ -56,8 +56,9 @@ class UserMeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
+        serializer = UserSerializer(request.user) # serialization
+        return Response(serializer.data) # returns json
+
 
     # patch allows partial edits
     def patch(self, request):
