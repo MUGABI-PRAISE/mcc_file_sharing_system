@@ -11,4 +11,5 @@ urlpatterns = [
     path('documents/sent/', views.SentFilesView.as_view(), name='sent-files'),
     path('documents/received/', views.ReceivedFilesView.as_view(), name='received-files'),
     path('documents/recent/', views.RecentFilesView.as_view(), name='recent-files'),
+    path('documents/<int:pk>/delete/', views.DocumentDeleteView.as_view(), name='document-delete'),
 ]

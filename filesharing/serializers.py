@@ -98,6 +98,7 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = [
+            'id',
             'document_title',
             'file',
             'message',
@@ -144,7 +145,7 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
 ##################################################################
 # create a serializer that includes document data through DocumentRecipient.
 class ReceivedDocumentSerializer(serializers.ModelSerializer):
-    document = DocumentUploadSerializer()
+    document = DocumentUploadSerializer(read_only=True)
 
     class Meta:
         model = DocumentRecipient

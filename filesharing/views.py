@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView # view for handling HTTP requests
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import login, logout
 from .serializers import UserSignupSerializer, UserLoginSerializer, UserSerializer, OfficeSerializer, DocumentUploadSerializer, ReceivedDocumentSerializer# our serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -111,10 +112,11 @@ class ReceivedFilesView(generics.ListAPIView):
 
     def get_queryset(self):
         user_office = self.request.user.office
-        return DocumentRecipient.objects.filter(
+        return DocumentRecipient.objects.select_related('document').filter(
             recipient_office=user_office,
             is_deleted=False
         ).order_by('-received_at')
+
 
 
 #8. recent few(4) documents
@@ -124,9 +126,22 @@ class RecentFilesView(generics.ListAPIView):
 
     def get_queryset(self):
         user_office = self.request.user.office
-        return DocumentRecipient.objects.filter(
+        return DocumentRecipient.objects.select_related('document').filter(
             recipient_office=user_office,
             is_deleted=False
         ).order_by('-received_at')[:4] # return the latest four
 
+
+#9. delete a document.
+class DocumentDeleteView(generics.DestroyAPIView):
+    queryset = Document.objects.all()
+    serializer_class = DocumentUploadSerializer  # Not used for deletion but DRF expects it
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        doc = super().get_object()
+        # Only allow deletion by the sender
+        # if doc.sender != self.request.user:
+        #     raise PermissionDenied("You do not have permission to delete this document.")
+        return doc
 # Create your views here.
