@@ -144,4 +144,35 @@ class DocumentDeleteView(generics.DestroyAPIView):
         # if doc.sender != self.request.user:
         #     raise PermissionDenied("You do not have permission to delete this document.")
         return doc
-# Create your views here.
+
+
+# 10. mark a file as read
+'''
+    note that we are not using a serializer here. DRF only recommends using a serializer when
+    Creating a new object	
+    Validating input data	
+    Updating many fields	
+    Returning complex nested responses
+
+    however if you want, you can use it.
+'''
+
+class MarkDocumentAsReadView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):#This is an override of the base `patch()` method
+        try:
+            recipient = DocumentRecipient.objects.get(
+                pk=pk,
+                recipient_office=request.user.office,
+                is_deleted=False
+            )
+        except DocumentRecipient.DoesNotExist:
+            return Response({'detail': 'File not found or access denied.'}, status=404)
+
+        # Update is_read to True
+        recipient.is_read = True
+        recipient.save()
+
+        return Response({'message': 'Marked as read successfully.'}, status=200)
+

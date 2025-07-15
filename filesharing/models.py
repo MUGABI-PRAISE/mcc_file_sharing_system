@@ -86,6 +86,7 @@ class Document(models.Model):
 
 
 # DOCUMENT RECIPIENT MODEL
+# helps to track different operations that happen to a file when sent to other recipients
 class DocumentRecipient(models.Model):
     recipient_office = models.ForeignKey(Office, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
