@@ -1,9 +1,0 @@
-libraries to install. 
-1. corsheaders.      pip install django-cors-headers
-2. rest framework    pip install djangorestframework
-3. simple jwt    pip install djangorestframework-simplejwt
-4. pillow.( for pictures)    pip install Pillow
-5. httpie for testing apis sudo apt install httpie -y
-
-note: for all of these, if it's a new project, you will have to follow all the steps required to make them work. ie whether to include 
-them in installed_apps or something like that.

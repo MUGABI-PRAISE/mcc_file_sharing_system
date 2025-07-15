@@ -12,5 +12,5 @@ urlpatterns = [
     path('documents/received/', views.ReceivedFilesView.as_view(), name='received-files'),
     path('documents/recent/', views.RecentFilesView.as_view(), name='recent-files'),
     path('documents/<int:pk>/delete/', views.DocumentDeleteView.as_view(), name='document-delete'),
-    path('documents/mark-as-read/<int:pk>/', views.MarkDocumentAsReadView.as_view(), name='mark-as-read'),
+    path('documents/markasread/<int:pk>/', views.MarkDocumentAsReadView.as_view(), name='markasread'),
 ]
