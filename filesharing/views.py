@@ -111,11 +111,20 @@ class ReceivedFilesView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        # ✅ Get the office of the currently logged-in user
         user_office = self.request.user.office
+
+        # ✅ Query the DocumentRecipient table
+        # - Filter: Only files sent to this user's office, and not deleted
+        # - Use select_related to optimize performance when accessing document fields
+        # - Order:
+        #     1. Unread files first (is_read = False)
+        #     2. Within that, most recent files first by received_at
         return DocumentRecipient.objects.select_related('document').filter(
             recipient_office=user_office,
             is_deleted=False
-        ).order_by('-received_at')
+        ).order_by('is_read', '-received_at')  # ✅ Unread first, because false < true then recent
+
 
 
 
