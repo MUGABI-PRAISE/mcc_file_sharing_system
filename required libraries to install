@@ -5,5 +5,9 @@ libraries to install.
 4. pillow.( for pictures)    pip install Pillow
 5. httpie for testing apis sudo apt install httpie -y
 
+6. server gunicorn. python3 -m pip install gunicorn
+7. whitenote for serving static files. pip install whitenose
+note that after installing white noise and adding it in middleware and setting the  default media folders, you are suppposed to first run python manage.py collectstatic, before doing it's configuration in wsgi.py. otherwise, the static folder will still be empty and the files which require static files being served like the admin page will break
+
 note: for all of these, if it's a new project, you will have to follow all the steps required to make them work. ie whether to include 
 them in installed_apps or something like that.
