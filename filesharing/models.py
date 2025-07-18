@@ -95,28 +95,3 @@ class DocumentRecipient(models.Model):
     is_read = models.BooleanField(default=False)
     
     
-#models i might need later
-# class Signature(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     document = models.OneToOneField(Document, on_delete=models.CASCADE)
-#     signed_at = models.DateTimeField(auto_now_add=True)
-#     signature_file = models.FileField(upload_to='signatures/')
-
-# class Reply(models.Model):
-#     original_document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='replies')
-#     reply_document = models.OneToOneField(Document, on_delete=models.CASCADE, related_name='reply_to')
-#     replied_by = models.ForeignKey(User, on_delete=models.CASCADE)
-#     replied_at = models.DateTimeField(auto_now_add=True)
-
-# class Notification(models.Model):
-#     recipient = models.ForeignKey(User, on_delete=models.CASCADE)
-#     message = models.CharField(max_length=255)
-#     is_read = models.BooleanField(default=False)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-# class AuditTrail(models.Model):
-#     action = models.CharField(max_length=100)
-#     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-#     document = models.ForeignKey(Document, on_delete=models.SET_NULL, null=True, blank=True)
-#     timestamp = models.DateTimeField(auto_now_add=True)
-#     details = models.TextField()

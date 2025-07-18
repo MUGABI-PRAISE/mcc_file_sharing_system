@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+from decouple import config # for loading environment variables
 
 
 
@@ -23,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f09q9zn17+7_thf_n7ziq78k1*m_l3)z-+!t@+0l^b9^8%93dp'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -43,6 +44,9 @@ INSTALLED_APPS = [
     'filesharing',
     'corsheaders', # allow other domains to login
     'rest_framework',
+    # cloudinary for storing uploaded files
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -143,8 +147,8 @@ CORS_ALLOWED_ORIGINS = [
 # ADDED BY ME
 ###########################
 # handling media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 # register the user model
 AUTH_USER_MODEL = 'filesharing.User' # this helps for future use. not yet sure how
@@ -165,3 +169,14 @@ SIMPLE_JWT = {
 }
 
 X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost:3000'
+
+## storing files to cloudinary
+# Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
