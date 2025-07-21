@@ -175,7 +175,8 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
 }
 
-X_FRAME_OPTIONS = 'DENY'  # or 'SAMEORIGIN' if embedding in iframe is needed
+X_FRAME_OPTIONS = 'ALLOWALL'
+  # or 'SAMEORIGIN' if embedding in iframe is needed
 
 ## storing files to cloudinary
 # Cloudinary
