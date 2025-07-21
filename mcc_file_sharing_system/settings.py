@@ -27,7 +27,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# settings.py
 DEBUG = config('DEBUG', default=False, cast=bool)
+
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+else:
+    SECURE_SSL_REDIRECT = True
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -168,7 +175,7 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
 }
 
-X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost:3000'
+X_FRAME_OPTIONS = 'DENY'  # or 'SAMEORIGIN' if embedding in iframe is needed
 
 ## storing files to cloudinary
 # Cloudinary
@@ -178,5 +185,25 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# additional deployment settings
+# redirect http requests to https
+SECURE_SSL_REDIRECT = True
+
+# secure cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# full https security
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# static files storage
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# about handling errors
+DEBUG_PROPAGATE_EXCEPTIONS = False
+
 
 
