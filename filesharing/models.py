@@ -36,10 +36,6 @@ class Office(models.Model):
     
     
 # DOCUMENT MODEL
-from django.db import models
-from django.conf import settings
-from django.core.exceptions import ValidationError
-
 class Document(models.Model):
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -81,8 +77,12 @@ class Document(models.Model):
 
             # Get file size
             self.file_size = self.file.size
+            
 
         super().save(*args, **kwargs)
+        
+        if self.file:
+            print("File URL after save:", self.file.url)
 
 
 # DOCUMENT RECIPIENT MODEL

@@ -90,26 +90,30 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
         many=True,
         write_only=True
     )
+    file = serializers.SerializerMethodField()  # <-- Add this line
     file_size = serializers.SerializerMethodField(read_only=True)
     sent_at = serializers.SerializerMethodField(read_only=True)
-    file_type = serializers.CharField(read_only=True)  # Include normalized file type in response
-    sender = UserSerializer(read_only=True) 
+    file_type = serializers.CharField(read_only=True)
+    sender = UserSerializer(read_only=True)
 
     class Meta:
         model = Document
         fields = [
             'id',
             'document_title',
-            'file',
+            'file',        # Will now call get_file()
             'message',
             'offices',
             'file_size',
             'sent_at',
-            'file_type'  ,
-            'sender' 
+            'file_type',
+            'sender'
         ]
 
-    # Get the file size in bytes
+    # get full file url
+    def get_file(self, obj):
+        return obj.file.url if obj.file else None
+
     def get_file_size(self, obj):
         size = obj.file_size
         if size is None:
@@ -121,19 +125,16 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
         else:
             return f"{size / (1024 ** 2):.1f} MB"
 
-    # time since sent
     def get_sent_at(self, obj):
         delta = timesince(obj.timestamp, now())
         return f"{delta.split(',')[0]} ago"
 
-    # Create a new document and associated recipients
     def create(self, validated_data):
         offices = validated_data.pop('offices')
         user = self.context['request'].user
 
         document = Document.objects.create(sender=user, **validated_data)
 
-        # Create recipients for each office
         for office in offices:
             DocumentRecipient.objects.create(document=document, recipient_office=office)
 
