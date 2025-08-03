@@ -16,12 +16,13 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config  # Reads variables from `.env`
 
+
 import cloudinary
 
 cloudinary.config( 
-  cloud_name = config('CLOUDINARY_CLOUD_NAME'),
-  api_key = config('CLOUDINARY_API_KEY'),
-  api_secret = config('CLOUDINARY_API_SECRET')
+  cloud_name = 'de68hyatv', 
+  api_key = '953861594452353', 
+  api_secret = 'ad6RUR6syKZWa7G0gIUVkU2Nnj4' 
 )
 
 # ---------------------------------------------------------------------
@@ -78,8 +79,9 @@ INSTALLED_APPS = [
     # Third-party apps
     'corsheaders',  # For handling Cross-Origin Resource Sharing
     'rest_framework',  # Django REST Framework for APIs
-    'cloudinary',  # Cloudinary integration
-    'cloudinary_storage',  # Cloudinary storage backend
+    # Cloudinary apps
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 # ---------------------------------------------------------------------
@@ -194,10 +196,5 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 # ---------------------------------------------------------------------
 # CLOUDINARY CONFIGURATION (for file storage)
 # ---------------------------------------------------------------------
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'de68hyatv',
-#     'API_KEY': '953861594452353',
-#     'API_SECRET': 'ad6RUR6syKZWa7G0gIUVkU2Nnj4',
-# }
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

@@ -90,18 +90,21 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
         many=True,
         write_only=True
     )
-    file = serializers.SerializerMethodField()  # <-- Add this line
+    file = serializers.FileField(write_only=True)
     file_size = serializers.SerializerMethodField(read_only=True)
     sent_at = serializers.SerializerMethodField(read_only=True)
     file_type = serializers.CharField(read_only=True)
     sender = UserSerializer(read_only=True)
+    # file url
+    file_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Document
         fields = [
             'id',
             'document_title',
-            'file',        # Will now call get_file()
+            'file',
+            'file_url',
             'message',
             'offices',
             'file_size',
@@ -110,10 +113,12 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
             'sender'
         ]
 
+
     # get full file url
-    def get_file(self, obj):
+    def get_file_url(self, obj):
         return obj.file.url if obj.file else None
 
+    # file_size
     def get_file_size(self, obj):
         size = obj.file_size
         if size is None:
