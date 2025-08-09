@@ -117,7 +117,7 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
         ]
 
     def get_file_url(self, obj):
-        return obj.file.url if obj.file else None
+        return obj.file if obj.file else None
 
     def get_file_size(self, obj):
         size = obj.file_size
@@ -136,40 +136,41 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
 
     # do some custom logic before saving the file to the database.
     def create(self, validated_data):
-        # get some fields from validated data, that we shall use to create the instance
         offices = validated_data.pop('offices')
         user = self.context['request'].user
         file = validated_data.pop('file')
 
-        # Determine file type & resource_type for Cloudinary
+        # Determine file extension
         ext = os.path.splitext(file.name)[1].lower().lstrip('.')
         if ext in ['mp4', 'mov', 'avi', 'mkv']:
             resource_type = 'video'
         elif ext in ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx']:
-            resource_type = 'raw' # important for cloudinary to know this ain't a video or image
+            resource_type = 'raw'
         else:
             resource_type = 'image'
 
-        # Upload to Cloudinary with correct resource_type
-        # we are doing all this before saving
+        # Upload to Cloudinary
         upload_result = cloudinary_upload(file, resource_type=resource_type)
-        print(upload_result)
 
-        # Create Document entry (this is where we save)
+        # Store metadata BEFORE overwriting file
+        file_size = file.size
+        file_type = ext
+
+        # Create document in DB
         document = Document.objects.create(
             sender=user,
-            file=upload_result['secure_url'],  # storing the file URL directly
-            file_type=ext,
-            file_size=file.size,
+            file=upload_result['secure_url'],  # Cloudinary URL
+            file_type=file_type,
+            file_size=file_size,
             **validated_data
         )
-        print(validated_data)
 
         # Link document to offices
         for office in offices:
             DocumentRecipient.objects.create(document=document, recipient_office=office)
 
         return document
+
 
 
 

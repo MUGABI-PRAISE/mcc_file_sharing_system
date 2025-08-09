@@ -46,14 +46,13 @@ class Document(models.Model):
     )
     document_title = models.CharField(max_length=255, blank=True)
     message = models.TextField(blank=True)
-    file = CloudinaryField('file')  # ✅ Cloudinary (remove `upload_to`)
-    file_type = models.CharField(max_length=10, blank=True)  # e.g., 'doc', 'ppt', 'xls', 'pdf'
-    file_size = models.PositiveIntegerField(null=True, blank=True)  # in bytes
+    file = models.URLField()  # ✅ store Cloudinary URL instead of CloudinaryField
+    file_type = models.CharField(max_length=10, blank=True)
+    file_size = models.PositiveIntegerField(null=True, blank=True)
     is_signed = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     deleted_by_sender = models.BooleanField(default=False)
 
-    # return a human readable name for this model
     def __str__(self):
         return self.document_title or f"Document #{self.pk}"
 
@@ -61,32 +60,6 @@ class Document(models.Model):
         if not self.file:
             raise ValidationError("You must upload a file.")
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-
-        if self.file:
-            name = self.file.name
-            ext = os.path.splitext(name)[1].lower().lstrip('.')  # e.g., 'pdf'
-
-            # Map to general type
-            if ext in ['doc', 'docx']:
-                self.file_type = 'doc'
-            elif ext in ['ppt', 'pptx']:
-                self.file_type = 'ppt'
-            elif ext in ['xls', 'xlsx']:
-                self.file_type = 'xls'
-            else:
-                self.file_type = ext
-
-            try:
-                self.file_size = self.file.size
-            except Exception:
-                self.file_size = None
-
-        super().save(*args, **kwargs)
-
-        if self.file:
-            print("File URL after save:", self.file.url)
 
 
 
