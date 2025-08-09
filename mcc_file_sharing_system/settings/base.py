@@ -19,10 +19,10 @@ from decouple import config  # Reads variables from `.env`
 
 import cloudinary
 
-cloudinary.config( 
-  cloud_name = 'de68hyatv', 
-  api_key = '953861594452353', 
-  api_secret = 'ad6RUR6syKZWa7G0gIUVkU2Nnj4' 
+cloudinary.config(
+    cloud_name = config('CLOUDINARY_CLOUD_NAME'),
+    api_key = config('CLOUDINARY_API_KEY'),
+    api_secret = config('CLOUDINARY_API_SECRET')
 )
 
 # ---------------------------------------------------------------------
