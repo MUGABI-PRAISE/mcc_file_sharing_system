@@ -2,8 +2,12 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from .models import Office, Document, DocumentRecipient
-from django.utils.timesince import timesince
+from django.utils.timesince import timesince # helps in enforcing the 'set at' feature.
 from django.utils.timezone import now
+import os
+
+#uploader for cloudinary
+from cloudinary.uploader import upload as cloudinary_upload
 
 #get the user model
 User = get_user_model()
@@ -95,7 +99,6 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
     sent_at = serializers.SerializerMethodField(read_only=True)
     file_type = serializers.CharField(read_only=True)
     sender = UserSerializer(read_only=True)
-    # file url
     file_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -113,12 +116,9 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
             'sender'
         ]
 
-
-    # get full file url
     def get_file_url(self, obj):
         return obj.file.url if obj.file else None
 
-    # file_size
     def get_file_size(self, obj):
         size = obj.file_size
         if size is None:
@@ -134,16 +134,43 @@ class DocumentUploadSerializer(serializers.ModelSerializer):
         delta = timesince(obj.timestamp, now())
         return f"{delta.split(',')[0]} ago"
 
+    # do some custom logic before saving the file to the database.
     def create(self, validated_data):
+        # get some fields from validated data, that we shall use to create the instance
         offices = validated_data.pop('offices')
         user = self.context['request'].user
+        file = validated_data.pop('file')
 
-        document = Document.objects.create(sender=user, **validated_data)
+        # Determine file type & resource_type for Cloudinary
+        ext = os.path.splitext(file.name)[1].lower().lstrip('.')
+        if ext in ['mp4', 'mov', 'avi', 'mkv']:
+            resource_type = 'video'
+        elif ext in ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx']:
+            resource_type = 'raw' # important for cloudinary to know this ain't a video or image
+        else:
+            resource_type = 'image'
 
+        # Upload to Cloudinary with correct resource_type
+        # we are doing all this before saving
+        upload_result = cloudinary_upload(file, resource_type=resource_type)
+        print(upload_result)
+
+        # Create Document entry (this is where we save)
+        document = Document.objects.create(
+            sender=user,
+            file=upload_result['secure_url'],  # storing the file URL directly
+            file_type=ext,
+            file_size=file.size,
+            **validated_data
+        )
+        print(validated_data)
+
+        # Link document to offices
         for office in offices:
             DocumentRecipient.objects.create(document=document, recipient_office=office)
 
         return document
+
 
 
 ##################################################################

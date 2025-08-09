@@ -53,6 +53,7 @@ class Document(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     deleted_by_sender = models.BooleanField(default=False)
 
+    # return a human readable name for this model
     def __str__(self):
         return self.document_title or f"Document #{self.pk}"
 
