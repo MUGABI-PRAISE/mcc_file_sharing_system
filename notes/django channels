@@ -8,3 +8,23 @@ django channels.
 4. handshake. web client sends an http request, and the server agrees to it, and the communicaiton upgrades from http to websocket.
 
 5. Consumer. A consumer is the basic unit of Channels code. We call it a consumer as it consumes events, but you can think of it as its own tiny little application
+
+6. flow of information. we have the client(browser which sends the requests. when it does so, the requests are received by the server.(gunicorn - wsgi, uvicorn,daphne - asgi). the server then uses an interface, ie asgi interface or wsgi interface to know how to call the application. ie asgi application. these are callables which know how to process your request. we call these consumers in channels.)
+here's the flow.
+    Client (browser/React)
+       |
+       | HTTP / WebSocket
+       v
+ASGI server (Daphne/Uvicorn)
+  - Accepts TCP connection
+  - Maintains connection
+  - Manages async events
+       |
+       | ASGI interface
+       v
+Your ASGI / Channels application
+  - Instance created per connection (scope)
+  - Handles events (HTTP request, WS message)
+  - Sends responses/messages back
+
+7. channel layer - a low-level abstraction around a set of transports that allow you to send information between different processes. helps in interprocess communication.

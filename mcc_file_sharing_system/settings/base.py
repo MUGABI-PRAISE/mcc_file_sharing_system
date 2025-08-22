@@ -66,6 +66,8 @@ CORS_ALLOWED_ORIGINS = config(
 # ---------------------------------------------------------------------
 INSTALLED_APPS = [
     # Default Django apps
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -136,7 +138,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mcc_file_sharing_system.wsgi.application'
+# WSGI_APPLICATION = 'mcc_file_sharing_system.wsgi.application'
+
+ASGI_APPLICATION = "mcc_file_sharing_system.asgi.application"
 
 # ---------------------------------------------------------------------
 # PASSWORD VALIDATION
