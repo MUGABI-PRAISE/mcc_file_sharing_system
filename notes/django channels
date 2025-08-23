@@ -28,3 +28,8 @@ Your ASGI / Channels application
   - Sends responses/messages back
 
 7. channel layer - a low-level abstraction around a set of transports that allow you to send information between different processes. helps in interprocess communication.
+
+8. A channel is a mailbox where messages can be sent to. Each channel has a name. Anyone who has the name of a channel can send a message to the channel.
+
+9. A group is a group of related channels. A group has a name. Anyone who has the name of a group can add/remove a channel to the group by name and send a message to all channels in the group. It is not possible to enumerate what channels are in a particular group.
+
