@@ -10,6 +10,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import permissions
 from rest_framework import generics 
 from .models import Office, Document, DocumentRecipient
+# realtime pourposes
+from .realtime import send_to_office, send_to_user
+from django.utils.timezone import localtime
 
 
 # 1. User Signup View
@@ -88,11 +91,46 @@ class OfficeListView(generics.ListAPIView):
 
 # 5. send a file.
 class DocumentUploadView(generics.CreateAPIView):
-    '''class based views. their inheritence of the CreateAPIView makes them require less inputs 
-     to do great things.'''
     queryset = Document.objects.all()
     serializer_class = DocumentUploadSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        document = serializer.save()  # your serializer.create does Cloudinary upload + recipients
+
+        # Build a minimal broadcast payload (you can shape this however you want)
+        payload_base = {
+            "document_id": document.id,
+            "document_title": document.document_title,
+            "message": document.message,
+            "file_url": document.file,
+            "file_type": document.file_type,
+            "file_size": document.file_size,
+            "sender": {
+                "id": document.sender_id,
+                "first_name": document.sender.first_name,
+                "last_name": document.sender.last_name,
+            },
+            "timestamp": localtime(document.timestamp).isoformat(),
+        }
+
+        # Notify each recipient office
+        recipients = DocumentRecipient.objects.filter(document=document).select_related("recipient_office")
+        for dr in recipients:
+            payload = {
+                **payload_base,
+                "recipient": {
+                    "document_recipient_id": dr.id,
+                    "office_id": dr.recipient_office_id,
+                    "office_name": dr.recipient_office.name,
+                    "received_at": localtime(dr.received_at).isoformat(),
+                }
+            }
+            send_to_office(dr.recipient_office_id, "file.shared", payload)
+
+        # Optionally, notify the sender’s personal channel (useful for “sent” list updates)
+        send_to_user(document.sender_id, "file.shared", {**payload_base, "recipient_count": recipients.count()})
+
 
 
 # 6. sent files.
@@ -144,15 +182,28 @@ class RecentFilesView(generics.ListAPIView):
 #9. delete a document.
 class DocumentDeleteView(generics.DestroyAPIView):
     queryset = Document.objects.all()
-    serializer_class = DocumentUploadSerializer  # Not used for deletion but DRF expects it
+    serializer_class = DocumentUploadSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         doc = super().get_object()
-        # Only allow deletion by the sender
-        # if doc.sender != self.request.user:
+        # Enforce sender-only delete if you want:
+        # if doc.sender_id != self.request.user.id:
         #     raise PermissionDenied("You do not have permission to delete this document.")
         return doc
+
+    def perform_destroy(self, instance):
+        # Collect recipients before deletion
+        recipients = list(DocumentRecipient.objects.filter(document=instance).values_list("recipient_office_id", flat=True))
+        sender_id = instance.sender_id
+        doc_id = instance.id
+        super().perform_destroy(instance)
+
+        payload = {"document_id": doc_id}
+        for office_id in recipients:
+            send_to_office(office_id, "file.deleted", payload)
+        send_to_user(sender_id, "file.deleted", payload)
+
 
 
 # 10. mark a file as read
@@ -169,9 +220,9 @@ class DocumentDeleteView(generics.DestroyAPIView):
 class MarkDocumentAsReadView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def patch(self, request, pk):#This is an override of the base `patch()` method
+    def patch(self, request, pk):
         try:
-            recipient = DocumentRecipient.objects.get(
+            recipient = DocumentRecipient.objects.select_related("document", "recipient_office").get(
                 pk=pk,
                 recipient_office=request.user.office,
                 is_deleted=False
@@ -179,9 +230,19 @@ class MarkDocumentAsReadView(APIView):
         except DocumentRecipient.DoesNotExist:
             return Response({'detail': 'File not found or access denied.'}, status=404)
 
-        # Update is_read to True
-        recipient.is_read = True
-        recipient.save()
+        if not recipient.is_read:
+            recipient.is_read = True
+            recipient.save()
+
+            payload = {
+                "document_id": recipient.document_id,
+                "document_recipient_id": recipient.id,
+                "reader_office_id": recipient.recipient_office_id,
+                "reader_office_name": recipient.recipient_office.name,
+            }
+            # Notify the sender that someone read their file
+            send_to_user(recipient.document.sender_id, "file.read", payload)
 
         return Response({'message': 'Marked as read successfully.'}, status=200)
+
 

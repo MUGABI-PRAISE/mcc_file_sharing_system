@@ -138,9 +138,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'mcc_file_sharing_system.wsgi.application'
 
-ASGI_APPLICATION = "mcc_file_sharing_system.asgi.application"
 
 # ---------------------------------------------------------------------
 # PASSWORD VALIDATION
@@ -186,7 +184,7 @@ REST_FRAMEWORK = {
 # SIMPLE JWT CONFIGURATION
 # ---------------------------------------------------------------------
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),   # Short lifetime for access tokens
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),   # Short lifetime for access tokens
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),     # Longer lifetime for refresh tokens
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -200,5 +198,19 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 # ---------------------------------------------------------------------
 # CLOUDINARY CONFIGURATION (for file storage)
 # ---------------------------------------------------------------------
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage' 
+
+# asgi application
+ASGI_APPLICATION = "mcc_file_sharing_system.asgi.application"
+
+# redis server to support the channel layer.
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
 

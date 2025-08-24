@@ -15,7 +15,8 @@ note that after installing white noise and adding it in middleware and setting t
 8. cloudinary for storing uploaded files. pip install cloudinary django-cloudinary-storage
 9. python decouple. for loading environment variables from .env file. pip install python-decouple
 
-
+daphne asgi server for syncronous communicaiton : python -m pip install -U 'channels[daphne]'
+redis server to support the channel layer. pip install channels_redis
 
 note: for all of these, if it's a new project, you will have to follow all the steps required to make them work. ie whether to include 
 them in installed_apps or something like that.
