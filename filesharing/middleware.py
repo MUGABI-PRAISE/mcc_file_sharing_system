@@ -1,22 +1,25 @@
 import urllib.parse
 from django.contrib.auth.models import AnonymousUser
 from channels.db import database_sync_to_async
+from channels.middleware import BaseMiddleware  # <-- ADD THIS IMPORT
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-class JWTAuthMiddleware:
+class JWTAuthMiddleware(BaseMiddleware):  # <-- INHERIT FROM BaseMiddleware
     """
     Custom JWT middleware for Django Channels.
     """
 
     def __init__(self, inner):
-        self.inner = inner
+        super().__init__(inner)  # <-- CALL PARENT INIT
         self.jwt_auth = JWTAuthentication()
 
     async def __call__(self, scope, receive, send):
         # If session auth already set a user, keep it
+        # Note: The user might be set by AuthMiddlewareStack later in the chain
+        # So we check if it's already authenticated *before* we try JWT
         user = scope.get("user", AnonymousUser())
         if user.is_authenticated:
             return await self.inner(scope, receive, send)

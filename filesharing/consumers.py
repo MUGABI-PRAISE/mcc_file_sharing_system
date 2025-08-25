@@ -40,8 +40,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         })
 
     async def disconnect(self, code):
-        for grp in self.groups_to_leave:
+        for grp in getattr(self, "groups_to_leave", []):
             await self.channel_layer.group_discard(grp, self.channel_name)
+
 
     # We keep the client->server `receive` minimal (optional ping/echo).
     async def receive(self, text_data=None, bytes_data=None):

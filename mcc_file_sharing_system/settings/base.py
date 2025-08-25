@@ -49,7 +49,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Default: local development hosts.
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1',
+    default='localhost,127.0.0.1,10.42.0.1',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -57,7 +57,7 @@ ALLOWED_HOSTS = config(
 # Default: React dev server at localhost:3000
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
+    default='http://localhost:3000,http://127.0.0.1:3000,http://10.42.0.1:3000',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 

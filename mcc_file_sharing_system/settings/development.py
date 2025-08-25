@@ -34,3 +34,11 @@ SECURE_HSTS_PRELOAD = False
 # ---------------------------------------------------------------------
 # Use simpler static file storage that doesn’t hash filenames (easier during dev)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+CORS_ALLOW_ALL_ORIGINS = True  # For development only
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React dev server
+    "http://127.0.0.1:3000",
+    # Add your production domain
+]
