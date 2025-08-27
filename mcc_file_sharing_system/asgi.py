@@ -16,7 +16,6 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
-from filesharing.middleware import JWTAuthMiddleware # this will allow our jwt based authentication to talk with web sockets
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mcc_file_sharing_system.settings.development")
 
@@ -25,6 +24,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mcc_file_sharing_system.setting
 django_asgi_app = get_asgi_application()
 
 from filesharing.routing import websocket_urlpatterns
+from filesharing.middleware import JWTAuthMiddleware # this will allow our jwt based authentication to talk with web sockets
+
 
 # django asgi app is now wrapped.
 application = ProtocolTypeRouter({
