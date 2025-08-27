@@ -49,17 +49,19 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Default: local development hosts.
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,10.42.0.1',
+    default='localhost,127.0.0.1,filesharingsystem-72ul.onrender.com',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
+
 
 # CORS_ALLOWED_ORIGINS defines which frontends (origins) can make cross-origin requests.
 # Default: React dev server at localhost:3000
 CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000,http://10.42.0.1:3000',
-    cast=lambda v: [s.strip() for s in v.split(',')]
+    "CORS_ALLOWED_ORIGINS",
+    default="http://localhost:3000,https://mccfilesharingsystem.vercel.app",
+    cast=lambda v: [s.strip() for s in v.split(",")],
 )
+
 
 # ---------------------------------------------------------------------
 # INSTALLED APPS
@@ -208,7 +210,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [config("REDIS_URL")],
         },
     },
 }
