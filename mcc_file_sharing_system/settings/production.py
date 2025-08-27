@@ -19,7 +19,8 @@ DEBUG = False
 # SECURITY SETTINGS
 # ---------------------------------------------------------------------
 # Redirect all HTTP requests to HTTPS
-SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = False
 
 # Make cookies secure (only sent over HTTPS)
 SESSION_COOKIE_SECURE = True
