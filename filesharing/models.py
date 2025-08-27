@@ -71,5 +71,4 @@ class DocumentRecipient(models.Model):
     received_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
-    
-    
+     

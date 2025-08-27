@@ -3,9 +3,12 @@ django-cors-headers
 djangorestframework
 djangorestframework-simplejwt
 Pillow
-gunicorn
 whitenoise
 cloudinary
 django-cloudinary-storage
 python-decouple
+channels
+channels-redis
+daphne
+
 
