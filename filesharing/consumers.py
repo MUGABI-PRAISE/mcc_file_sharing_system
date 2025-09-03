@@ -13,7 +13,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         user = self.scope.get("user", AnonymousUser())
         if not user or not user.is_authenticated:
             # Optional: accept and only send public events; we’ll close to be strict.
-            await self.close(code=4401)  # 4401: Unauthorized (custom)
+            await self.close(code=4401)  # 4401: Unauthorized (custom) codes 4000-4999 are reserved for app use
             return
 
         self.groups_to_leave = []
@@ -22,12 +22,16 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         self.user_group = user_group_name(user.id)
         await self.channel_layer.group_add(self.user_group, self.channel_name)
         self.groups_to_leave.append(self.user_group)
+        print(groups_to_leave)
 
         # Add user’s office group (if any)
         self.office_group = None
         if getattr(user, "office_id", None):
             self.office_group = office_group_name(user.office_id)
             await self.channel_layer.group_add(self.office_group, self.channel_name)
+            '''
+                you can group add before you accept. but you cannot send before you accept.
+            '''
             self.groups_to_leave.append(self.office_group)
 
         await self.accept()

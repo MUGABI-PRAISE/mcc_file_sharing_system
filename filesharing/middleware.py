@@ -1,7 +1,7 @@
 import urllib.parse
 from django.contrib.auth.models import AnonymousUser
 from channels.db import database_sync_to_async
-from channels.middleware import BaseMiddleware  # <-- ADD THIS IMPORT
+from channels.middleware import BaseMiddleware  
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 
