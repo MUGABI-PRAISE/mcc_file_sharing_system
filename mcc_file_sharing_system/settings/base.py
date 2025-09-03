@@ -49,7 +49,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Default: local development hosts.
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,filesharingsystem-72ul.onrender.com',
+    default='localhost,127.0.0.1,filesharingsystem-72ul.onrender.com,10.42.0.1',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -58,7 +58,7 @@ ALLOWED_HOSTS = config(
 # Default: React dev server at localhost:3000
 CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS",
-    default="http://localhost:3000,https://mccfilesharingsystem.vercel.app",
+    default="http://localhost:3000,https://mccfilesharingsystem.vercel.app,http://10.42.0.1:3000",
     cast=lambda v: [s.strip() for s in v.split(",")],
 )
 

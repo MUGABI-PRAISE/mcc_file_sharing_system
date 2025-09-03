@@ -10,6 +10,8 @@ from .models import Office, Document, DocumentRecipient, Chat, ChatParticipant, 
 from rest_framework import generics, permissions, status
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 # realtime pourposes
 from .realtime import send_to_office, send_to_user
