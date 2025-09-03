@@ -12,7 +12,7 @@ based on the DJANGO_ENV environment variable.
 
 import os
 
-DJANGO_ENV = os.environ.get('DJANGO_ENV', 'production').lower()
+DJANGO_ENV = os.environ.get('DJANGO_ENV', 'development').lower()
 
 if DJANGO_ENV == 'production':
     from .production import *
