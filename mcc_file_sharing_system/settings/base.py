@@ -68,11 +68,11 @@ CORS_ALLOWED_ORIGINS = config(
 # ---------------------------------------------------------------------
 INSTALLED_APPS = [
     # Default Django apps
+    'django.contrib.contenttypes',
     'daphne',
     'channels',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
