@@ -1,0 +1,65 @@
+things to rectify in the app.
+1. when sendig the file, the send button should rotate to show processing. this number first turns into digits before refreshing. but after it shows kbs. it should show kbs immediately.
+2. in the file card. there's a figure that comes after the title. something like 23456. this should be removed of replaced with what should be there.
+3. the forward to button on the file card should work.
+4. the download button should be removed
+5. the receiver can delete the file. which is fine. but it also gets deleted form the sender's sent files. this has to stop. 
+then the sender can delete it and it gets removed from the receivers files. which is okay. but it should indicate that the file was deleted on (time stamp)
+. error catching. this is very crucial. especially when sending the file. i need to be more specific, by carrying out thorough research about errors that can happen while sending the file. whether from the socket connection, (django) or from cloudinary, and tell the user what has happened.
+. find out if there are other ways of reading word, ppt, images and videos in an iframe. to prevent using the download button and view full.
+
+7. work on profile page. the user should be able to edit some information. and this should be done successfuly.
+8. work on the settings page. including the theme and other settings to be worked on.
+9. the send and messages buttons should be floating even on profile page.
+10. the side bar should also be on settings.
+11. work on the module for composing the files from there.
+12. the sound shall not play everytime the dashboard is rendered. it shold play only when the new message arrives.
+13. when signing up, there should be an optional field for other names. in case the person has three names.
+
+///////////////////////future////////////////////////////////////
+i shall see if i can translate the application to use materialize or bootstrap to give it a new look.
+
+
+/////////////////////////////////////////////////////////////////
+special pull out on the chat modal
+////////////////////////////////////////////////////////////////
+1. unread, read statuses.
+2. pinning, achieving and deleting chats on the backend
+3. emoji pane should keep on until i select many emojis and it hsould dissapear when i click outside. or in the text area or whywehre out side it.
+4. i have to make voice notes work on all devices. (find a way to oopen microphones on other devices)
+5. the name that shows the name of the receiver should dissapear.
+6. work with photos. the photo should either be uploaded when the user is being registered, or updated via the profile. this photo should be the one to come to the chats. then if the photo is not there, then the avatar can remain.
+7. on the face of the chat, i should see the name fo the peron i am chatting with, not myname,receiver name. then in brackets, i shall put his real name. 
+office(office_incharge)
+8. the modal for deleting,achieving, and pin shold come immediately there. not in the top right corner.
+9. still on the message, the (0 minutes ago) should also be real time, not fetching each time on refresh.
+10. i need a badge to show incoming messages. these should be real time.
+11. talking about the badge, each chat should increment a badge when a message comes. but when on the dashboard, the button for messaging should also be having a badge to show when a message comes in. this adds badges for all chats. it should also be realtime.
+12. when i am not around, and some messages are sent, and i come and fine a badge of 3 messages, when i open, there should be a marker to show me where the new messages are starting from. (it's common in 'messages' app on android. when i have new messgea, they first show me a marker of where the new messages start from) which dissapears after reaing them (or clicking back). you should be careful so that this feature does not tamper with the one that tells me a new message when the chat is opened but reading messaes which are up.
+13. when the message is edited, it shold now show the time it has been edited, and show a mark 'edited' to mean the message was edited.
+14. modals should be used instead of alerts, to finish tasks such as editing messages, deleting and others where alerts are used. these modal should be well stled.
+15. when the voice note is being recorded, yes the button changes, but it should show an animation to simulate recording, and it should also be counting seconds i am recording. (it will also continue to minutes if someone records a long voice note)
+16. the word direct chat shall be removed, and only one name of office of the receiver shall appear, with his name in brackets just like on the side bar. the font of the office shall be alittle higher than the name
+17. some small but very stunning coloring should be used to differentiate the sender and receiver's messages.
+18. see if emojis can be styled. so that they look more polished than these.
+19. the emojis should be created in their own component. and ALL OF THEM SHOULD BE THERE.
+20. when in direct chat, the three dots now bring information about the group. this shold apply for groups only.
+21. the three dots should move to the far right of the header, and should be vertical not horizontal.
+
+//////////groups///////////////
+1. when a group is created, i should see it immediately added to my chats. not to first refresh to see the group i have been added to my chats.
+2. when a person has a photo, it shall be displayed, otherwise the avatar is fine.
+3. in the header of the group chat, when showing the group members, it should start with me having a word 'you' in brackets. 
+4. different avatars for different people can be styled differently.
+5. check if the logic for admins has been set. ie when a person creates a group, he shall be the admin. then in the three dot navigation for the group, where the group settings are, we can see the members, and which of these is the admin. and when adding members, the members who are already part of the group should not come again in the members to choose from to add to the group. this can only be donuser001e by the admin. 
+6. the admin can make others admin and they also have these previleges.
+7. currently, leaving the group is not yet implemented. only the front end is simulated. this should be implemented in the backend.
+8. Editing the message shall also apply to group messages as in direct chats. i don't see it there now.
+9. also deleting for me shall apply to group messages as in direct chats.
+10. don't forget that also these messages in groups shall be styles to easily differentiate between my sent messages and messages from other members in the group. (USE DRY principle where possible)
+
+note: things to keep in mind. we already have a toast system and a modal system which gives us the modals and teh toasts for successful or error messages. don't use others. and try to give meaningful messages.
+///////////////future/////////
+sound for new message. this should sound when on dashboard or even in chat.
+in settings, there should be an option for removing sound
+
