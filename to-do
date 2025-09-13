@@ -42,9 +42,9 @@ office(office_incharge)
 16. the word direct chat shall be removed, and only one name of office of the receiver shall appear, with his name in brackets just like on the side bar. the font of the office shall be alittle higher than the name
 17. some small but very stunning coloring should be used to differentiate the sender and receiver's messages.
 18. see if emojis can be styled. so that they look more polished than these.
-19. the emojis should be created in their own component. and ALL OF THEM SHOULD BE THERE.
+
 20. when in direct chat, the three dots now bring information about the group. this shold apply for groups only.
-21. the three dots should move to the far right of the header, and should be vertical not horizontal.
+
 
 //////////groups///////////////
 1. when a group is created, i should see it immediately added to my chats. not to first refresh to see the group i have been added to my chats.
@@ -57,9 +57,11 @@ office(office_incharge)
 8. Editing the message shall also apply to group messages as in direct chats. i don't see it there now.
 9. also deleting for me shall apply to group messages as in direct chats.
 10. don't forget that also these messages in groups shall be styles to easily differentiate between my sent messages and messages from other members in the group. (USE DRY principle where possible)
+11. the three dots should move to the far right of the header, and should be vertical not horizontal.
 
 note: things to keep in mind. we already have a toast system and a modal system which gives us the modals and teh toasts for successful or error messages. don't use others. and try to give meaningful messages.
 ///////////////future/////////
 sound for new message. this should sound when on dashboard or even in chat.
 in settings, there should be an option for removing sound
+19. the emojis should be created in their own component. and ALL OF THEM SHOULD BE THERE.
 
