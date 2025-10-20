@@ -58,7 +58,7 @@ ALLOWED_HOSTS = config(
 # Default: React dev server at localhost:3000
 CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS",
-    default="http://localhost:3000,https://mccfilesharingsystem.vercel.app,http://10.42.0.1:3000,https://mccfilesharingsystem-neon.vercel.app",
+    default="http://localhost:3000,http://10.42.0.1:3000,https://mccfilesharingsystem-neon.vercel.app",
     cast=lambda v: [s.strip() for s in v.split(",")],
 )
 
